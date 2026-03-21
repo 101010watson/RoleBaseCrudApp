@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Form — RoleBase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/forms.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/employee/list}">RoleBase</a>
+    <div class="navbar-right">
+        <span class="role-badge" th:text="${session.role}">ROLE</span>
+        <a class="btn-logout" th:href="@{/employee/logout}">Logout</a>
+    </div>
+</nav>
+
+<div class="form-page-wrapper">
+    <div class="form-page-card">
+        <h1 class="form-page-title">Employee Details</h1>
+        <p class="form-page-subtitle">Fill in the information below</p>
+
+        <form th:action="@{/employee/saveEmployee}" th:object="${employee}" method="POST">
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="field">
+                <label>Name</label>
+                <input type="text" th:field="*{name}" placeholder="Full name"/>
+                <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
+            </div>
+            <div class="field">
+                <label>Role</label>
+                <input type="text" th:field="*{role}" placeholder="e.g. Software Engineer"/>
+                <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="error"></span>
+            </div>
+            <div class="field">
+                <label>Department</label>
+                <input type="text" th:field="*{department}" placeholder="e.g. Marketing"/>
+                <span th:if="${#fields.hasErrors('department')}" th:errors="*{department}" class="error"></span>
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="text" th:field="*{email}" placeholder="employee@gmail.com"/>
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
+            </div>
+            <div class="field">
+                <label>Phone</label>
+                <input type="text" th:field="*{phone}" placeholder="+91 XXXXX XXXXX"/>
+                <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"></span>
+            </div>
+
+            <input type="submit" value="Save Employee" class="btn-save"/>
+        </form>
+
+        <a th:href="@{/employee/list}" class="back-link">← Back to Directory</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Directory — RoleBase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/forms.css}"/>
+</head>
+<body>
+
+<nav class="navbar">
+    <a class="navbar-brand" th:href="@{/employee/list}">Employee Directory</a>
+    <div class="navbar-right">
+        <span class="role-badge" th:text="${session.role}">ROLE</span>
+        <a class="btn-logout" th:href="@{/employee/logout}">Logout</a>
+    </div>
+</nav>
+
+<div class="page-wrapper">
+    <div class="page-header">
+        <h1 class="page-title">Employee Table</h1>
+        <a th:if="${session.role == 'ADMIN' or session.role == 'HR'}"
+           th:href="@{/employee/showFormAdd}"
+           class="btn-add">+ Add Employee</a>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th th:if="${session.role == 'ADMIN' or session.role == 'HR' or session.role == 'MANAGER'}">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="tempEmployee : ${employees}">
+                <td th:text="${tempEmployee.name}"></td>
+                <td th:text="${tempEmployee.role}"></td>
+                <td th:text="${tempEmployee.department}"></td>
+                <td th:text="${tempEmployee.email}"></td>
+                <td th:text="${tempEmployee.phone}"></td>
+                <td class="buttons">
+                    <a th:if="${session.role == 'ADMIN' or session.role == 'HR' or session.role == 'MANAGER'}"
+                       th:href="@{/employee/showFormUpdate(employeeId=${tempEmployee.id})}"
+                       class="btn-update">Update</a>
+                    <a th:if="${session.role == 'ADMIN' or session.role == 'MANAGER'}"
+                       th:href="@{/employee/deleteEmployee(employeeId=${tempEmployee.id})}"
+                       class="btn-delete"
+                       onclick="if (!(confirm('Are you sure you want to delete this employee?'))) return false">Delete</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

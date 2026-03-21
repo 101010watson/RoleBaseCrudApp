@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register — RoleBase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/forms.css}"/>
+</head>
+<body class="auth-page">
+
+<div class="form-card">
+    <h1 class="form-title">Create account</h1>
+    <p class="form-subtitle">Register to access your dashboard</p>
+
+    <p th:if="${error}" th:text="${error}" class="msg-error"></p>
+
+    <form th:action="@{/employee/registerUser}" th:object="${user}" method="POST">
+        <div class="field">
+            <label>Email</label>
+            <input type="text" th:field="*{email}" placeholder="you@gmail.com"/>
+            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" th:field="*{password}" placeholder="Enter your password"/>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></span>
+        </div>
+        <div class="field">
+            <label>Role</label>
+            <select th:field="*{role}">
+                <option value="">Select a role</option>
+                <option value="ADMIN">Admin</option>
+                <option value="HR">HR</option>
+                <option value="MANAGER">Manager</option>
+                <option value="EMPLOYEE">Employee</option>
+            </select>
+        </div>
+        <input type="submit" class="btn-primary" value="Register"/>
+        <p class="form-footer">Already registered? <a th:href="@{/employee/login}">Login</a></p>
+    </form>
+</div>
+
+</body>
+</html>
