@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public User save(User theUser) {
+        // encode the user password using bcrypt encoder
         theUser.setPassword(passwordEncoder.encode(theUser.getPassword()));
         return userRepository.save(theUser);
     }
