@@ -50,7 +50,9 @@ public class EmployeeController {
         if(bindingResult.hasErrors()){
             return "employee/sign-in-form";
         }
+        // check if the user is already registered
         else if(userService.findByEmail(theUser.getEmail()) != null){
+            // RedirectAttributes is a Spring MVC interface used to pass data across a redirect without losing it.
             redirectAttributes.addFlashAttribute("error", "Already Registered Please Login");
             return "redirect:/employee/login";
         }
@@ -60,6 +62,11 @@ public class EmployeeController {
         redirectAttributes.addFlashAttribute("successMessage", "Registered Successfully!");
         return "redirect:/employee/login";
     }
+    // A note on redirectAttributes :-
+    // Spring temporarily stores your flash attribute in the HTTP session,
+    // then after the redirect happens on the next GET request,
+    // it automatically moves it into the Model and deletes it from the session.
+    // So the message shows exactly once — no matter how many times the user refreshes, it won't reappear
 
     @GetMapping("/list")
     public String employeeList(@ModelAttribute("user") User theUser, Model theModel, RedirectAttributes redirectAttributes){
@@ -114,18 +121,21 @@ public class EmployeeController {
             return "redirect:/employee/login";
         }
 
+        // if the role does not exist for that email
         if(!existingUser.getRole().equals(theUser.getRole())){
             redirectAttributes.addFlashAttribute("error", "Invalid Role");
             return "redirect:/employee/login";
         }
 
         // 4. If both match → store role in session and redirect
+        // storing the role in the session is important for role based access
         session.setAttribute("role", existingUser.getRole());
         return "redirect:/employee/list";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session){
+      // this destroys the session for that user and redirects to the login page
       session.invalidate();
       return "redirect:/employee/login";
     }
