@@ -14,6 +14,8 @@
 
     <p th:if="${error}" th:text="${error}" class="msg-error"></p>
     <p th:if="${credentialsError}" th:text="${credentialsError}" class="msg-error"></p>
+
+    <!-- Redirect Attribute is passed and checked here-->
     <p th:if="${successMessage}" th:text="${successMessage}" class="msg-success"></p>
 
     <form th:action="@{/employee/loginUser}" th:object="${user}" method="POST">
@@ -38,6 +40,8 @@
             </select>
         </div>
         <input type="submit" class="btn-primary" value="Login"/>
+
+        <!-- Redirects to the sign-up page if not registered -->
         <p class="form-footer">Don't have an account? <a th:href="@{/employee/register}">Register</a></p>
     </form>
 </div>
