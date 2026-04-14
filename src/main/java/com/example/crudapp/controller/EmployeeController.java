@@ -54,6 +54,8 @@ public class EmployeeController {
         else if(userService.findByEmail(theUser.getEmail()) != null){
             // RedirectAttributes is a Spring MVC interface used to pass data across a redirect without losing it.
             redirectAttributes.addFlashAttribute("error", "Already Registered Please Login");
+            // The redirect: prefix is a special keyword Spring recognizes,
+            // telling it to send an HTTP 302 redirect to /employee/login instead of rendering a view template.
             return "redirect:/employee/login";
         }
         else{
@@ -96,7 +98,11 @@ public class EmployeeController {
 
     @GetMapping("/showFormUpdate")
     public String showFormUpdate(@RequestParam("employeeId") int id,Model theModel){
+
+        // First find the employee by id
         Employee theEmployee = employeeService.findById(id);
+
+        // then pass that employee that is found by id to the model
         theModel.addAttribute("employee",theEmployee);
         return "employee/update-form";
     }
@@ -104,7 +110,6 @@ public class EmployeeController {
     @PostMapping("/loginUser")
     public String loginUser(
             @ModelAttribute("user") User theUser,
-            Model theModel,
             RedirectAttributes redirectAttributes, HttpSession session){
         // 1. Find user by email
         User existingUser = userService.findByEmail(theUser.getEmail());
