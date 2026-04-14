@@ -11,6 +11,7 @@
 <nav class="navbar">
     <a class="navbar-brand" th:href="@{/employee/list}">RoleBase</a>
     <div class="navbar-right">
+<!--        Displays the Role of the current user-->
         <span class="role-badge" th:text="${session.role}">ROLE</span>
         <a class="btn-logout" th:href="@{/employee/logout}">Logout</a>
     </div>
@@ -23,31 +24,37 @@
 
         <form th:action="@{/employee/saveEmployee}" th:object="${employee}" method="POST">
 
+<!--            this is there to handle the id while updating an employee-->
             <input type="hidden" th:field="*{id}"/>
 
             <div class="field">
                 <label>Name</label>
                 <input type="text" th:field="*{name}" placeholder="Full name"/>
+<!--                Checks if any Error regarding the name-->
                 <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
             </div>
             <div class="field">
                 <label>Role</label>
                 <input type="text" th:field="*{role}" placeholder="e.g. Software Engineer"/>
+<!--                Checks if any error regarding the role-->
                 <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="error"></span>
             </div>
             <div class="field">
                 <label>Department</label>
                 <input type="text" th:field="*{department}" placeholder="e.g. Marketing"/>
+<!--                Checks if any error regarding the department name-->
                 <span th:if="${#fields.hasErrors('department')}" th:errors="*{department}" class="error"></span>
             </div>
             <div class="field">
                 <label>Email</label>
                 <input type="text" th:field="*{email}" placeholder="employee@gmail.com"/>
+<!--                Checks if any error regarding the email-->
                 <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
             </div>
             <div class="field">
                 <label>Phone</label>
                 <input type="text" th:field="*{phone}" placeholder="+91 XXXXX XXXXX"/>
+<!--                Checks if any error regarding the phone number-->
                 <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"></span>
             </div>
 

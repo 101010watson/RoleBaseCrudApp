@@ -19,6 +19,7 @@
 <div class="page-wrapper">
     <div class="page-header">
         <h1 class="page-title">Employee Table</h1>
+<!--        Only ADMIN and HR can add Employee to the database-->
         <a th:if="${session.role == 'ADMIN' or session.role == 'HR'}"
            th:href="@{/employee/showFormAdd}"
            class="btn-add">+ Add Employee</a>
@@ -33,6 +34,7 @@
                 <th>Department</th>
                 <th>Email</th>
                 <th>Phone</th>
+<!--                Show the action button only if the session role is not an employee-->
                 <th th:if="${session.role == 'ADMIN' or session.role == 'HR' or session.role == 'MANAGER'}">Action</th>
             </tr>
             </thead>
@@ -44,9 +46,11 @@
                 <td th:text="${tempEmployee.email}"></td>
                 <td th:text="${tempEmployee.phone}"></td>
                 <td class="buttons">
+<!--                    Except the Employee the rest can update the employee details-->
                     <a th:if="${session.role == 'ADMIN' or session.role == 'HR' or session.role == 'MANAGER'}"
                        th:href="@{/employee/showFormUpdate(employeeId=${tempEmployee.id})}"
                        class="btn-update">Update</a>
+<!--                    only an Admin or the Manager can delete an employee from the database-->
                     <a th:if="${session.role == 'ADMIN' or session.role == 'MANAGER'}"
                        th:href="@{/employee/deleteEmployee(employeeId=${tempEmployee.id})}"
                        class="btn-delete"
