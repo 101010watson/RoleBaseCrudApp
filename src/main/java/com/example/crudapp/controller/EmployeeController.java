@@ -4,7 +4,6 @@ import com.example.crudapp.Entity.Employee;
 import com.example.crudapp.Entity.User;
 import com.example.crudapp.service.EmployeeService;
 import com.example.crudapp.service.UserService;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.util.List;
 
 @Controller
@@ -23,6 +21,7 @@ public class EmployeeController {
     private UserService userService;
     private EmployeeService employeeService;
     private BCryptPasswordEncoder passwordEncoder;
+
 
     @Autowired
     public EmployeeController(UserService userService, EmployeeService employeeService, BCryptPasswordEncoder passwordEncoder) {
@@ -47,17 +46,33 @@ public class EmployeeController {
     @PostMapping("/registerUser")
     public String registerUser(@Valid @ModelAttribute("user") User theUser, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
-        if(bindingResult.hasErrors()){
-            return "employee/sign-in-form";
+        if (bindingResult.hasErrors() || theUser.getRole() == null || theUser.getRole().isEmpty()) {
+            // Show error message
+            redirectAttributes.addFlashAttribute("error", "Role selection is required");
+            return "redirect:/employee/register";
         }
+
         // check if the user is already registered
-        else if(userService.findByEmail(theUser.getEmail()) != null){
+        if(userService.findByEmail(theUser.getEmail()) != null){
             // RedirectAttributes is a Spring MVC interface used to pass data across a redirect without losing it.
             redirectAttributes.addFlashAttribute("error", "Already Registered Please Login");
             // The redirect: prefix is a special keyword Spring recognizes,
             // telling it to send an HTTP 302 redirect to /employee/login instead of rendering a view template.
             return "redirect:/employee/login";
         }
+
+        else if("ADMIN".equals(theUser.getRole())){
+            // Query database to see if any ADMIN user already exists
+            List<User> admins = userService.findAll().stream()
+                    .filter(u -> "ADMIN".equals(u.getRole()))
+                    .toList();
+
+            if(!admins.isEmpty()){
+                redirectAttributes.addFlashAttribute("error","An Admin already exists");
+                return "redirect:/employee/register";
+            }
+        }
+
         else{
             userService.save(theUser);
         }
@@ -105,43 +120,5 @@ public class EmployeeController {
         // then pass that employee that is found by id to the model
         theModel.addAttribute("employee",theEmployee);
         return "employee/update-form";
-    }
-
-    @PostMapping("/loginUser")
-    public String loginUser(
-            @ModelAttribute("user") User theUser,
-            RedirectAttributes redirectAttributes, HttpSession session){
-        // 1. Find user by email
-        User existingUser = userService.findByEmail(theUser.getEmail());
-
-        // 2. If not found → error
-        if(existingUser == null){
-            redirectAttributes.addFlashAttribute("error", "Invalid Email");
-            return "redirect:/employee/login";
-        }
-
-        // 3. If found but password doesn't match → error
-        if(!passwordEncoder.matches(theUser.getPassword(), existingUser.getPassword())){
-            redirectAttributes.addFlashAttribute("error", "Invalid Password");
-            return "redirect:/employee/login";
-        }
-
-        // if the role does not exist for that email
-        if(!existingUser.getRole().equals(theUser.getRole())){
-            redirectAttributes.addFlashAttribute("error", "Invalid Role");
-            return "redirect:/employee/login";
-        }
-
-        // 4. If both match → store role in session and redirect
-        // storing the role in the session is important for role based access
-        session.setAttribute("role", existingUser.getRole());
-        return "redirect:/employee/list";
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpSession session){
-      // this destroys the session for that user and redirects to the login page
-      session.invalidate();
-      return "redirect:/employee/login";
     }
 }
