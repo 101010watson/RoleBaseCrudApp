@@ -24,6 +24,7 @@ public class Employee {
 
     @NotNull(message = "cannot be Null")
     @Column(name = "role")
+    @Pattern(regexp = "^(ADMIN|HR|MANAGER|EMPLOYEE)", message = "Invalid Role")
     private String role;
 
     @NotNull(message = "cannot be Null")
