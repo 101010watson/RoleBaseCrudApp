@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Employee Form — RoleBase</title>
@@ -9,11 +10,26 @@
 <body>
 
 <nav class="navbar">
-    <a class="navbar-brand" th:href="@{/employee/list}">RoleBase</a>
+    <a class="navbar-brand" th:href="@{/employee/list}">
+        <span class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L4 5.5V11c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V5.5L12 2z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        <span class="brand-text">RoleBase</span>
+    </a>
     <div class="navbar-right">
-<!--        Displays the Role of the current user-->
-        <span class="role-badge" th:text="${session.role}">ROLE</span>
-        <a class="btn-logout" th:href="@{/employee/logout}">Logout</a>
+        <!--        Displays the Role of the current user-->
+        <span class="role-badge"
+              th:classappend="${'role-' + #authentication.principal.plainRole.toLowerCase()}"
+              th:text="${#strings.capitalize(#authentication.principal.plainRole.toLowerCase())}">
+            ROLE
+        </span>
+        <form th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn-logout">Logout</button>
+        </form>
     </div>
 </nav>
 
@@ -24,37 +40,42 @@
 
         <form th:action="@{/employee/saveEmployee}" th:object="${employee}" method="POST">
 
-<!--            this is there to handle the id while updating an employee-->
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <!--            this is there to handle the id while updating an employee-->
             <input type="hidden" th:field="*{id}"/>
 
             <div class="field">
                 <label>Name</label>
                 <input type="text" th:field="*{name}" placeholder="Full name"/>
-<!--                Checks if any Error regarding the name-->
+                <!--                Checks if any Error regarding the name-->
                 <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></span>
             </div>
             <div class="field">
                 <label>Role</label>
-                <input type="text" th:field="*{role}" placeholder="e.g. Software Engineer"/>
-<!--                Checks if any error regarding the role-->
-                <span th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="error"></span>
+                <select th:field="*{role}">
+                    <option value="">Select a role</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="HR">HR</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="EMPLOYEE">Employee</option>
+                </select>
             </div>
             <div class="field">
                 <label>Department</label>
                 <input type="text" th:field="*{department}" placeholder="e.g. Marketing"/>
-<!--                Checks if any error regarding the department name-->
+                <!--                Checks if any error regarding the department name-->
                 <span th:if="${#fields.hasErrors('department')}" th:errors="*{department}" class="error"></span>
             </div>
             <div class="field">
                 <label>Email</label>
                 <input type="text" th:field="*{email}" placeholder="employee@gmail.com"/>
-<!--                Checks if any error regarding the email-->
+                <!--                Checks if any error regarding the email-->
                 <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
             </div>
             <div class="field">
                 <label>Phone</label>
                 <input type="text" th:field="*{phone}" placeholder="+91 XXXXX XXXXX"/>
-<!--                Checks if any error regarding the phone number-->
+                <!--                Checks if any error regarding the phone number-->
                 <span th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error"></span>
             </div>
 

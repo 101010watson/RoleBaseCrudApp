@@ -9,12 +9,23 @@
 <body class="auth-page">
 
 <div class="form-card">
+    <div class="brand-mark">
+        <span class="brand-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L4 5.5V11c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V5.5L12 2z" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+                <path d="M9 12l2 2 4-4" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        <span class="brand-name">RoleBase</span>
+    </div>
+
     <h1 class="form-title">Create account</h1>
     <p class="form-subtitle">Register to access your dashboard</p>
 
     <p th:if="${error}" th:text="${error}" class="msg-error"></p>
 
     <form th:action="@{/employee/registerUser}" th:object="${user}" method="POST">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <div class="field">
             <label>Email</label>
             <input type="text" th:field="*{email}" placeholder="you@gmail.com"/>
