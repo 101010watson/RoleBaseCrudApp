@@ -25,6 +25,8 @@ public class User {
     private String password;
 
     @Column(name = "role")
+    @NotNull(message = "Role cannot be empty")
+    @Pattern(regexp = "^(ADMIN|HR|MANAGER|EMPLOYEE)", message = "Invalid Role")
     private String role;
 
     public User() {
