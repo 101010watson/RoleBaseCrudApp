@@ -1,4 +1,5 @@
-FROM ubuntu:latest
-LABEL authors="abhishek-sahu"
+FROM amazoncorretto:25-jdk
 
-ENTRYPOINT ["top", "-b"]
+ADD target/role-base.jar role-base.jar
+
+ENTRYPOINT ["java", "-jar", "/role-base.jar"]
