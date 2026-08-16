@@ -1,2 +1,39 @@
 services:
-  
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - project-network
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: project
+      MYSQL_USER: employeedb
+      MYSQL_PASSWORD: employeedb
+      MYSQL_ROOT_PASSWORD: sahu@123
+    ports:
+      - "3307:3306"
+    healthcheck:
+      # Wait until MySQL is ready before starting the app, so Spring Boot doesn't fail
+      # while connecting to the database during startup.
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - project-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+networks:
+  project-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
