@@ -72,10 +72,7 @@ public class EmployeeController {
                 return "redirect:/employee/register";
             }
         }
-
-        else{
-            userService.save(theUser);
-        }
+        userService.save(theUser);
         redirectAttributes.addFlashAttribute("successMessage", "Registered Successfully!");
         return "redirect:/employee/login";
     }
